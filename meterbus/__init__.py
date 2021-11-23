@@ -1,42 +1,48 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
-"""
-    python meterbus
-    ~~~~~~~~~~~~~~~
 
-    A library to decode M-Bus frames.
+"""upython meterbus
 
-    :copyright: (c) 2017-2019 by Mikael Ganehag Brorsson.
+    A library to decode M-Bus frames on upython devices.
+
+    :copyright: (c) 2017-2021 by Mikael Ganehag Brorsson.
     :license: BSD, see LICENSE for more details.
 """
 
-from .globals import g
-from .defines import *
+from meterbus.defines import *
 
-from .core_objects import DataEncoding, FunctionType, MeasureUnit, VIFUnit, \
-    VIFUnitExt, VIFUnitSecExt, VIFTable, DateCalculator
+from meterbus.core_objects import (
+    DataEncoding,
+    FunctionType,
+    MeasureUnit,
+    VIFUnit,
+    VIFUnitExt,
+    VIFUnitSecExt,
+    VIFTable,
+    DateCalculator)
 
-from .telegram_ack import TelegramACK
-from .telegram_short import TelegramShort
-from .telegram_control import TelegramControl
-from .telegram_long import TelegramLong
+from meterbus.telegram_ack import TelegramACK
+from meterbus.telegram_short import TelegramShort
+from meterbus.telegram_control import TelegramControl
+from meterbus.telegram_long import TelegramLong
 
-from .data_information_block import DataInformationBlock
-from .value_information_block import ValueInformationBlock
-from .telegram_header import TelegramHeader
-from .telegram_body import TelegramBody, TelegramBodyHeader, \
-    TelegramBodyPayload
-from .telegram_field import TelegramField
-from .telegram_variable_data_record import TelegramVariableDataRecord
+from meterbus.data_information_block import DataInformationBlock
+from meterbus.value_information_block import ValueInformationBlock
+from meterbus.telegram_header import TelegramHeader
+from meterbus.telegram_body import (
+    TelegramBody,
+    TelegramBodyHeader,
+    TelegramBodyPayload)
+from meterbus.telegram_field import TelegramField
+from meterbus.telegram_variable_data_record import TelegramVariableDataRecord
 
-from .wtelegram_snd_nr import WTelegramSndNr
-from .wtelegram_body import WTelegramFrame
-from .wtelegram_header import WTelegramHeader
+from meterbus.wtelegram_snd_nr import WTelegramSndNr
+from meterbus.wtelegram_body import WTelegramFrame
+from meterbus.wtelegram_header import WTelegramHeader
 
-from .exceptions import MBusFrameDecodeError, FrameMismatch
+from meterbus.exceptions import MBusFrameDecodeError, FrameMismatch
 
-from .serial import *
-from .auxiliary import *
+from meterbus.serial import *
+from meterbus.auxiliary import *
 
 __author__ = "Mikael Ganehag Brorsson"
 __license__ = "BSD-3-Clause"
@@ -64,10 +70,7 @@ def load(data):
         try:
             return Frame.parse(data)
 
-        except FrameMismatch as e:
+        except FrameMismatch:
             pass
 
     raise MBusFrameDecodeError("unable to decode frame")
-
-def debug(state):
-  g.debug = state

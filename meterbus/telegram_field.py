@@ -1,8 +1,5 @@
 import struct
-from .core_objects import DateCalculator
-
-from builtins import (bytes, str, open, super, range,
-                      zip, round, input, int, pow, object)
+from meterbus.core_objects import DateCalculator
 
 
 class TelegramField(object):
@@ -47,13 +44,12 @@ class TelegramField(object):
         i = len(bcd_data)
         while i > 0:
             val = (val * 10)
-            if bcd_data[i-1]>>4 < 0xA:
-                val += ((bcd_data[i-1]>>4) & 0xF)
-            val = (val * 10) + ( bcd_data[i-1] & 0xF)
-
+            if (bcd_data[i - 1] >> 4) < 0xA:
+                val += ((bcd_data[i - 1] >> 4) & 0xF)
+            val = (val * 10) + (bcd_data[i - 1] & 0xF)
             i -= 1
 
-        if(bcd_data[len(bcd_data)-1]>>4 == 0xF):
+        if(bcd_data[len(bcd_data) - 1] >> 4 == 0xF):
             val *= -1
 
         return val
@@ -122,10 +118,7 @@ class TelegramField(object):
         # FIXME: ord? chr?
 
     def debug_fields(self, highlight, cval=0):
-        color = ['\033[92m',
-                 '\033[94m',
-                 '\033[93m']
-
+        color = ['\033[92m', '\033[94m', '\033[93m']
         ENDC = '\033[0m'
 
         if highlight >= len(self.parts):

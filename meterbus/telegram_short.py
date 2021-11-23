@@ -1,6 +1,11 @@
-from .defines import *
-from .telegram_header import TelegramHeader
-from .exceptions import MBusFrameDecodeError, MBusFrameCRCError, FrameMismatch
+import json
+
+from meterbus.defines import *
+from meterbus.telegram_header import TelegramHeader
+from meterbus.exceptions import (
+    MBusFrameDecodeError,
+    MBusFrameCRCError,
+    FrameMismatch)
 
 
 class TelegramShort(object):
@@ -30,8 +35,9 @@ class TelegramShort(object):
             self._header.load(tgr)
 
             if not self.check_crc():
-                raise MBusFrameCRCError(self.compute_crc(),
-                                        self.header.crcField.parts[0])
+                raise MBusFrameCRCError(
+                    self.compute_crc(),
+                    self.header.crcField.parts[0])
         else:
             self._header.startField.parts = [FRAME_SHORT_START]
             self._header.lField.parts = [0x00]  # not used in short frame
@@ -64,13 +70,10 @@ class TelegramShort(object):
         yield self._header.aField.parts[0]
         yield self.compute_crc()
         yield self._header.stopField.parts[0]
-        
+
     @property
     def interpreted(self):
-        return {
-            'head': self.header.interpreted
-        }
+        return {'head': self.header.interpreted}
 
     def to_JSON(self):
-        return json.dumps(self.interpreted, sort_keys=True, indent=4, use_decimal=True)
-
+        return json.dumps(self.interpreted)

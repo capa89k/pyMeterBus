@@ -1,5 +1,5 @@
-from .core_objects import DataEncoding, FunctionType
-from .telegram_field import TelegramField
+from meterbus.core_objects import DataEncoding, FunctionType
+from meterbus.telegram_field import TelegramField
 
 
 class DataInformationBlock(TelegramField):
@@ -93,17 +93,22 @@ class DataInformationBlock(TelegramField):
         return {
             0: (0, DataEncoding.ENCODING_NULL),
             1: (len_enc, DataEncoding.ENCODING_INTEGER),  # 1 byte int [8 bit]
-            2: (len_enc, DataEncoding.ENCODING_INTEGER),  # 2 byte int [16 bit] or date...
+            # 2 byte int [16 bit] or date...
+            2: (len_enc, DataEncoding.ENCODING_INTEGER),
             3: (len_enc, DataEncoding.ENCODING_INTEGER),  # 3 byte int [24 bit]
-            4: (len_enc, DataEncoding.ENCODING_INTEGER),  # 4 byte int [32 bit] or date...
+            # 4 byte int [32 bit] or date...
+            4: (len_enc, DataEncoding.ENCODING_INTEGER),
             5: (4, DataEncoding.ENCODING_REAL),  # 4 byte float [32 bit]
             6: (6, DataEncoding.ENCODING_INTEGER),  # 6 byte int [48 bit]
             7: (8, DataEncoding.ENCODING_INTEGER),  # 8 byte int [64 bit]
             8: (0, DataEncoding.ENCODING_NULL),  # Nothing...
             9: (len_enc - 8, DataEncoding.ENCODING_BCD),  # 2 digit BCD [8 bit]
-            10: (len_enc - 8, DataEncoding.ENCODING_BCD),  # 4 digit BCD [16 bit]
-            11: (len_enc - 8, DataEncoding.ENCODING_BCD),  # 6 digit BCD [24 bit]
-            12: (len_enc - 8, DataEncoding.ENCODING_BCD),  # 8 digit BCD [32 bit]
+            # 4 digit BCD [16 bit]
+            10: (len_enc - 8, DataEncoding.ENCODING_BCD),
+            # 6 digit BCD [24 bit]
+            11: (len_enc - 8, DataEncoding.ENCODING_BCD),
+            # 8 digit BCD [32 bit]
+            12: (len_enc - 8, DataEncoding.ENCODING_BCD),
             13: (6, DataEncoding.ENCODING_VARIABLE_LENGTH),  # variable length
             14: (6, DataEncoding.ENCODING_BCD),  # 12 digit BCD [40 bit]
             15: (0, DataEncoding.ENCODING_NULL)  # Special Function FIXME

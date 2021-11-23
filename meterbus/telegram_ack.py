@@ -1,4 +1,4 @@
-from .exceptions import MBusFrameDecodeError, MBusFrameCRCError, FrameMismatch
+from meterbus.exceptions import MBusFrameDecodeError, MBusFrameCRCError, FrameMismatch
 
 
 class TelegramACK(object):

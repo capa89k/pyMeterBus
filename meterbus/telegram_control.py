@@ -1,8 +1,13 @@
-from .telegram_body import TelegramBody
-from .telegram_header import TelegramHeader
-from .exceptions import MBusFrameCRCError, MBusFrameDecodeError, MBusFrameEncodeError, FrameMismatch
+from meterbus.telegram_body import TelegramBody
+from meterbus.telegram_header import TelegramHeader
+from meterbus.exceptions import (
+    MBusFrameCRCError,
+    MBusFrameDecodeError,
+    MBusFrameEncodeError,
+    FrameMismatch)
 
-from .defines import *
+from meterbus.defines import *
+
 
 class TelegramControl(object):
     @staticmethod
@@ -44,8 +49,9 @@ class TelegramControl(object):
             self.body.load(tgr[headerLength:-2])
 
             if not self.check_crc():
-                raise MBusFrameCRCError(self.compute_crc(),
-                                        self.header.crcField.parts[0])
+                raise MBusFrameCRCError(
+                    self.compute_crc(),
+                    self.header.crcField.parts[0])
         else:
             self.header.cField.parts = [
                 CONTROL_MASK_SND_UD | CONTROL_MASK_DIR_M2S

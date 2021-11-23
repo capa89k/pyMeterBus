@@ -1,38 +1,34 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from .globals import g
-from .telegram_short import TelegramShort
-from .telegram_long import TelegramLong
-from .auxiliary import is_primary_address, is_secondary_address
+from meterbus.globals import DEBUG
+from meterbus.telegram_short import TelegramShort
+from meterbus.telegram_long import TelegramLong
+from meterbus.auxiliary import is_primary_address
 
-from .telegram_ack import TelegramACK
-from .telegram_short import TelegramShort
-from .telegram_control import TelegramControl
-from .telegram_long import TelegramLong
-from .wtelegram_snd_nr import WTelegramSndNr
+from meterbus.telegram_ack import TelegramACK
+from meterbus.telegram_control import TelegramControl
+from meterbus.wtelegram_snd_nr import WTelegramSndNr
 
-from .exceptions import (MBusFrameDecodeError, MBusFrameCRCError,
-                         FrameMismatch, MbusFrameLengthError)
+from meterbus.exceptions import (
+	MBusFrameDecodeError,
+	MBusFrameCRCError,
+	FrameMismatch,
+	MbusFrameLengthError)
 
-from .defines import *
-import logging
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+from meterbus.defines import *
 
 
 def serial_send(ser, data=None, read_echo=False):
     if not data:
-        if g.debug:
-            logger.info('Unable to send {0} value'.format(data))
+        if DEBUG:
+            print('Unable to send {0} value'.format(data))
         return None
 
-    if g.debug and data:
+    if DEBUG and data:
         frame_data = bytearray(data)
-        logger.info('SEND ({0:03d}) {1}'.format(
-             len(frame_data),
-             " ".join(["{:02x}".format(x).upper() for x in frame_data])
+        print('SEND ({0:03d}) {1}'.format(
+            len(frame_data),
+            " ".join(["{:02x}".format(x).upper() for x in frame_data])
         ))
 
     ser.write(bytearray(data))
@@ -141,29 +137,28 @@ def recv_frame(ser, length=1):
 
         data += characters
 
-        if g.debug and characters:
-            logger.info('RECV ({0:03d}) {1}'.format(
-                 len(characters),
-                 " ".join(["{:02x}".format(x).upper() for x in characters])
+        if DEBUG and characters:
+            print('RECV ({0:03d}) {1}'.format(
+                len(characters),
+                " ".join(["{:02x}".format(x).upper() for x in characters])
             ))
 
-        for Frame in [WTelegramSndNr, TelegramACK, TelegramShort,
-                      TelegramControl, TelegramLong]:
-                try:
-                        frame = Frame.parse(list(data))
-                        return data
+        for Frame in [WTelegramSndNr, TelegramACK, TelegramShort, TelegramControl, TelegramLong]:
+            try:
+                frame = Frame.parse(list(data))
+                return data
 
-                except MBusFrameCRCError as e:
-                        pass
+            except MBusFrameCRCError:
+                pass
 
-                except FrameMismatch as e:
-                        pass
+            except FrameMismatch:
+                pass
 
-                except MBusFrameDecodeError as e:
-                        pass
+            except MBusFrameDecodeError:
+                pass
 
-                except MbusFrameLengthError as e:
-                        length = (e.length) - len(data)
+            except MbusFrameLengthError as e:
+                length = (e.length) - len(data)
 
     if len(data):
         return False
@@ -177,11 +172,11 @@ class MBusSerial:
         self.preamble = preamble
 
     def serial_send(self, data, read_echo=False):
-        if g.debug:
+        if DEBUG:
             frame_data = bytearray(data)
-            logger.info('SEND ({0:03d}) {1}'.format(
-                 len(data),
-                 " ".join(["{:02x}".format(x).upper() for x in frame_data])
+            print('SEND ({0:03d}) {1}'.format(
+                len(data),
+                " ".join(["{:02x}".format(x).upper() for x in frame_data])
             ))
 
         self.ser.write(bytearray(data))
@@ -264,29 +259,28 @@ class MBusSerial:
 
             data += characters
 
-            if g.debug and characters:
-                logger.info('RECV ({0:03d}) {1}'.format(
-                     len(characters),
-                     " ".join(["{:02x}".format(x).upper() for x in characters])
+            if DEBUG and characters:
+                print('RECV ({0:03d}) {1}'.format(
+                    len(characters),
+                    " ".join(["{:02x}".format(x).upper() for x in characters])
                 ))
 
-            for Frame in [WTelegramSndNr, TelegramACK, TelegramShort,
-                          TelegramControl, TelegramLong]:
-                    try:
-                            frame = Frame.parse(list(data))
-                            return data
+            for Frame in [WTelegramSndNr, TelegramACK, TelegramShort, TelegramControl, TelegramLong]:
+                try:
+                    frame = Frame.parse(list(data))
+                    return data
 
-                    except MBusFrameCRCError as e:
-                            pass
+                except MBusFrameCRCError:
+                    pass
 
-                    except FrameMismatch as e:
-                            pass
+                except FrameMismatch:
+                    pass
 
-                    except MBusFrameDecodeError as e:
-                            pass
+                except MBusFrameDecodeError:
+                    pass
 
-                    except MbusFrameLengthError as e:
-                            length = (e.length) - len(data)
+                except MbusFrameLengthError as e:
+                    length = (e.length) - len(data)
 
         if len(data):
             return False

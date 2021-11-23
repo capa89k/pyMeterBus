@@ -1,11 +1,10 @@
-from builtins import (bytes, str, open, super, range,
-                      zip, round, input, int, pow, object)
+import json
 
-import simplejson as json
-
-from .wtelegram_header import WTelegramHeader
-from .wtelegram_body import WTelegramFrame
-from .exceptions import MBusFrameDecodeError, MBusFrameCRCError, FrameMismatch
+from meterbus.wtelegram_body import WTelegramFrame
+from meterbus.exceptions import (
+    MBusFrameDecodeError,
+    MBusFrameCRCError,
+    FrameMismatch)
 
 
 class WTelegramSndNr(WTelegramFrame):
@@ -36,13 +35,13 @@ class WTelegramSndNr(WTelegramFrame):
                                         self.header.crcField.parts[0])
 
     def compute_crc(self):
-        return (self.header.cField.parts[0] +
-                self.header.aField.parts[0]) % 256
+        return (
+            self.header.cField.parts[0] + self.header.aField.parts[0]
+        ) % 256
 
     def check_crc(self):
         return True
         # return self.compute_crc() == self.header.crcField.parts[0]
 
     def to_JSON(self):
-        return json.dumps(self.interpreted, sort_keys=False,
-                          indent=4, use_decimal=True)
+        return json.dumps(self.interpreted)

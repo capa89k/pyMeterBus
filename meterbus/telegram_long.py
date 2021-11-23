@@ -1,9 +1,12 @@
-import simplejson as json
+import json
 
-from .telegram_body import TelegramBody
-from .telegram_header import TelegramHeader
-from .exceptions import (MBusFrameCRCError, MBusFrameDecodeError,
-                         FrameMismatch, MbusFrameLengthError)
+from meterbus.telegram_body import TelegramBody
+from meterbus.telegram_header import TelegramHeader
+from meterbus.exceptions import (
+    MBusFrameCRCError,
+    MBusFrameDecodeError,
+    FrameMismatch,
+    MbusFrameLengthError)
 
 
 class TelegramLong(object):
@@ -53,8 +56,9 @@ class TelegramLong(object):
                 raise MBusFrameDecodeError("Not a variable data long frame")
 
             if not self.check_crc():
-                raise MBusFrameCRCError(self.compute_crc(),
-                                        self.header.crcField.parts[0])
+                raise MBusFrameCRCError(
+                    self.compute_crc(),
+                    self.header.crcField.parts[0])
 
     @property
     def secondary_address(self):
@@ -146,8 +150,7 @@ class TelegramLong(object):
         return self.compute_crc() == self.header.crcField.parts[0]
 
     def to_JSON(self):
-        return json.dumps(self.interpreted, sort_keys=True,
-                          indent=4, use_decimal=True)
+        return json.dumps(self.interpreted)
 
     def __len__(self):
         return (
@@ -170,17 +173,17 @@ class TelegramLong(object):
 
     def __iter__(self):
         self.header.lField = [
-          len(self.header.cField.parts) +
-          len(self.header.aField.parts) +
-          len(self.body.bodyHeader.ci_field.parts) +
-          len(self.body.bodyHeader.id_nr_field) +
-          len(self.body.bodyHeader.manufacturer_field.parts) +
-          len(self.body.bodyHeader.version_field.parts) +
-          len(self.body.bodyHeader.measure_medium_field.parts) +
-          len(self.body.bodyHeader.acc_nr_field.parts) +
-          len(self.body.bodyHeader.status_field.parts) +
-          len(self.body.bodyHeader.sig_field.parts) +
-          len(self.body.bodyPayload.body.parts)
+            len(self.header.cField.parts) +
+            len(self.header.aField.parts) +
+            len(self.body.bodyHeader.ci_field.parts) +
+            len(self.body.bodyHeader.id_nr_field) +
+            len(self.body.bodyHeader.manufacturer_field.parts) +
+            len(self.body.bodyHeader.version_field.parts) +
+            len(self.body.bodyHeader.measure_medium_field.parts) +
+            len(self.body.bodyHeader.acc_nr_field.parts) +
+            len(self.body.bodyHeader.status_field.parts) +
+            len(self.body.bodyHeader.sig_field.parts) +
+            len(self.body.bodyPayload.body.parts)
         ]
 
         yield self.header.startField.parts[0]

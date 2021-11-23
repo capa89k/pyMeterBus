@@ -1,9 +1,7 @@
-import simplejson as json
-
-from .core_objects import DataEncoding, FunctionType
-from .telegram_field import TelegramField
-from .telegram_variable_data_record import TelegramVariableDataRecord
-from .value_information_block import ValueInformationBlock
+from meterbus.core_objects import DataEncoding, FunctionType
+from meterbus.telegram_field import TelegramField
+from meterbus.telegram_variable_data_record import TelegramVariableDataRecord
+from meterbus.value_information_block import ValueInformationBlock
 
 
 class TelegramBodyPayload(object):
@@ -169,8 +167,7 @@ class TelegramBodyPayload(object):
         return False
 
     def to_JSON(self):
-        return json.dumps(self.interpreted, sort_keys=False,
-                          indent=4, use_decimal=True)
+        return json.dumps(self.interpreted)
 
 
 class TelegramBodyHeader(object):
@@ -318,8 +315,7 @@ class TelegramBodyHeader(object):
         }
 
     def to_JSON(self):
-        return json.dumps(self.interpreted, sort_keys=False,
-                          indent=4, use_decimal=True)
+        return json.dumps(self.interpreted)
 
 
 class TelegramBody(object):
@@ -390,5 +386,4 @@ class TelegramBody(object):
         self.bodyPayload.debug()
 
     def to_JSON(self):
-        return json.dumps(self.interpreted, sort_keys=False,
-                          indent=4, use_decimal=True)
+        return json.dumps(self.interpreted)

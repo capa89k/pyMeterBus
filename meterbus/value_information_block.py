@@ -1,4 +1,4 @@
-from .telegram_field import TelegramField
+from meterbus.telegram_field import TelegramField
 
 
 class ValueInformationBlock(TelegramField):

@@ -1,16 +1,9 @@
-from builtins import (bytes, str, open, super, range,
-                      zip, round, input, int, pow, object)
+import json
 
-import binascii
+from crypto import AES
 
-import simplejson as json
-from Crypto.Cipher import AES
-
-from .core_objects import DataEncoding, FunctionType
-from .telegram_field import TelegramField
-# from .telegram_variable_data_record import TelegramVariableDataRecord
-from .value_information_block import ValueInformationBlock
-from .telegram_body import TelegramBodyPayload
+from meterbus.telegram_field import TelegramField
+from meterbus.telegram_body import TelegramBodyPayload
 
 
 class WTelegramBaseDataHeader(object):
@@ -61,8 +54,7 @@ class WTelegramBaseDataHeader(object):
 
     @property
     def address(self):
-        return self.id_nr_field.parts + self.version_field.parts + \
-               self.device_field.parts
+        return self.id_nr_field.parts + self.version_field.parts + self.device_field.parts
 
     @property
     def ci_field(self):
@@ -234,11 +226,11 @@ class WTelegramBaseDataHeader(object):
             '''
 
             iv = bytearray(
-                 self.manufacturer_field.parts
-                 + self.id_nr_field.parts
-                 + self.version_field.parts
-                 + self.device_field.parts
-                 + self.acc_nr_field.parts * 8
+                self.manufacturer_field.parts
+                + self.id_nr_field.parts
+                + self.version_field.parts
+                + self.device_field.parts
+                + self.acc_nr_field.parts * 8
             )
 
             return iv
@@ -260,7 +252,7 @@ class WTelegramBaseDataHeader(object):
         if self.encryption_mode == 5:
             orig_len = len(data)
 
-            spec = AES.new(key, AES.MODE_CBC, bytes(self.crypto_iv))
+            spec = AES(key, AES.MODE_CBC, bytes(self.crypto_iv))
             data = data + ((16 - orig_len % 16) * [self.PADDING_BYTE])
             data = [int(x) for x in bytearray(spec.decrypt(bytes(data)))]
 
@@ -296,8 +288,7 @@ class WTelegramBaseDataHeader(object):
             }
 
     def to_JSON(self):
-        return json.dumps(self.interpreted, sort_keys=False,
-                          indent=4, use_decimal=True)
+        return json.dumps(self.interpreted)
 
 
 class WTelegramManuSpecDataHeader(WTelegramBaseDataHeader):
@@ -504,7 +495,7 @@ class WTelegramFrame(object):
         if not isinstance(self.dataHeader, WTelegramManuSpecDataHeader):
             try:
                 self._payload.load(bdata[(2 + self.dataHeader.length):])
-            except IndexError as e:
+            except IndexError:
                 return None
         else:
             # Insert manu specific record with data
@@ -514,6 +505,4 @@ class WTelegramFrame(object):
         return True
 
     def to_JSON(self):
-        return json.dumps(self.interpreted, sort_keys=False,
-                          indent=4, use_decimal=True)
-
+        return json.dumps(self.interpreted)
