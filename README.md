@@ -1,49 +1,14 @@
 Meter-Bus for Python
 ====================
-[![Build Status](https://travis-ci.org/ganehag/pyMeterBus.svg?branch=master)](https://travis-ci.org/ganehag/pyMeterBus) [![codecov](https://codecov.io/gh/ganehag/pyMeterBus/branch/master/graph/badge.svg)](https://codecov.io/gh/ganehag/pyMeterBus)
 
 About
 -----
 
 [M-Bus](http://www.m-bus.com/) (Meter-Bus) is a European standard (EN 13757-2 physical and link layer, EN 13757-3 application layer) for the remote reading of gas or electricity meters. M-Bus is also usable for other types of consumption meters. The M-Bus interface is made for communication on two wires, making it very cost effective.
 
+This repository is a fork that aims to port the code on  micropython device (currently only tested againt a LoPy4).
 
-Current State
--------------
-
-The library works, but it lacks proper documentation. Well, it lacks any kind of documentation to be honest.
-
-The implementation is currently under ~~heavy~~ development. Its original intended use case was very specific, as a library to aid in the decoding of M-Bus telegrams sent over HTTP, and might thus not suite everyone.
-
-Still, it is a generic library, and has been used is several different use cases.
-
-- Decoding of re-encoded M-Bus frames sent from an Elvaco Wireless M-Bus master over HTTP.
-- Communicating with M-Bus devices over RS-232 serial.
-- Communication with M-Bus devices over RFC 2217.
-- As a debugging tool to decode M-Bus frames.
-
-Currently only the *variable data structures* are implemented. The library can only decode M-Bus frame. It does currently **NOT** support encoding and transmission of M-Bus frames, such as *control* frames.
-
-However, if the need arises, missing pieces can be implemented on a request basis.
-
-
-Tools
------
-
-You can find a set of utilities in the `tools` folder.
-
-* mbus-serial-request-data.py
-* mbus-serial-request-data-multi-reply.py
-* mbus-serial-scan.py
-* mbus-serial-scan-seconday.py
-
-These tools can communicate over a serial device `/dev/ttyX` or even over RFC2217 using the format `rfc2217://host:port`.
-
-If you are using `ser2net` as a RFC2217 server. You need to configure it the following way:
-
-```
-2000:telnet:0:/dev/ttySX:2400 remctl banner
-```
+Based on the original work of Mikael Ganehag Brorsson.
 
 Known Issues
 ------------
@@ -108,8 +73,6 @@ Code examples
 
 ### Decode the value of a single record (record 3)
 ```python
-#!/usr/bin/python
-
 import meterbus
 
 data = "\x68\x6A\x6A\x68\x08\x01\x72\x43\x53\x93\x07\x65" \
@@ -133,8 +96,6 @@ print telegram.records[3].parsed_value
 
 ### Request a frame over Serial and dump it in JSON format
 ```python
-#!/usr/bin/python
-
 import serial
 import meterbus
 
