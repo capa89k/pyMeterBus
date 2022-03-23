@@ -10,6 +10,8 @@ This repository is a fork that aims to port the code on  micropython device (cur
 
 Based on the original work of Mikael Ganehag Brorsson.
 
+**WARNING: this repo is working in progress, don't use it!**
+
 Known Issues
 ------------
 * Missing: Fixed data structure parsing.
